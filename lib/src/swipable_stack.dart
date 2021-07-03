@@ -510,7 +510,7 @@ class _SwipableStackState extends State<SwipableStack>
     final cards = <Widget>[];
     for (var index = _currentIndex;
         index <
-            math.min(_currentIndex + 3, widget.itemCount ?? _currentIndex + 3);
+            math.min(_currentIndex + 4, widget.itemCount ?? _currentIndex + 4);
         index++) {
       cards.add(
         widget.builder(
@@ -887,6 +887,7 @@ class _SwipablePositioned extends StatelessWidget {
   bool get _isFirst => index == 0;
 
   bool get _isSecond => index == 1;
+  bool get _isFourth => index == 3;
 
   double get _rotationAngle => _isFirst
       ? calculateAngle(_currentPositionDiff.dx, areaConstraints.maxWidth)
@@ -925,6 +926,15 @@ class _SwipablePositioned extends StatelessWidget {
         constraintsDiff.maxWidth,
         constraintsDiff.maxHeight,
       );
+    } else if (_isFourth) {
+      final maxDiff = areaConstraints * _animationRate / 2;
+      final constraintsDiff =
+          areaConstraints * (1 - _animationProgress()) * _animationRate * 1.3;
+
+      return Offset(
+        maxDiff.maxWidth,
+        constraintsDiff.maxHeight,
+      );
     } else {
       final maxDiff = areaConstraints * _animationRate / 2;
       return Offset(
@@ -937,21 +947,75 @@ class _SwipablePositioned extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final position = _preferredPosition(context);
-    return Positioned(
-      top: position.dy,
-      left: position.dx,
-      child: Transform.rotate(
-        angle: _rotationAngle,
-        alignment: Alignment.topLeft,
-        origin: _rotationOrigin,
-        child: ConstrainedBox(
-          constraints: _constraints(context),
-          child: IgnorePointer(
-            ignoring: !_isFirst,
-            child: child,
-          ),
-        ),
-      ),
-    );
+    return _isFirst
+        ? Positioned(
+            top: position.dy,
+            left: position.dx,
+            child: Transform.rotate(
+              angle: _rotationAngle,
+              alignment: Alignment.topLeft,
+              origin: _rotationOrigin,
+              child: ConstrainedBox(
+                constraints: _constraints(context),
+                child: IgnorePointer(
+                  ignoring: !_isFirst,
+                  child: child,
+                ),
+              ),
+            ),
+          )
+        : _isFourth
+            ? Positioned(
+                top: -position.dy,
+                left: position.dx,
+                child: Transform.scale(
+                  scale: 0.98,
+                  child: Transform.rotate(
+                    angle: _rotationAngle,
+                    alignment: Alignment.topLeft,
+                    origin: _rotationOrigin,
+                    child: ConstrainedBox(
+                      constraints: _constraints(context),
+                      child: IgnorePointer(
+                        ignoring: !_isFirst,
+                        child: child,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : _isSecond
+                ? Positioned(
+                    top: -position.dy,
+                    left: position.dx,
+                    child: Transform.rotate(
+                      angle: _rotationAngle,
+                      alignment: Alignment.topLeft,
+                      origin: _rotationOrigin,
+                      child: ConstrainedBox(
+                        constraints: _constraints(context),
+                        child: IgnorePointer(
+                          ignoring: !_isFirst,
+                          child: child,
+                        ),
+                      ),
+                    ),
+                  )
+                : Positioned(
+                    top: -position.dy,
+                    left: position.dx,
+                    child: Transform.rotate(
+                      angle: _rotationAngle,
+                      alignment: Alignment.topLeft,
+                      origin: _rotationOrigin,
+                      child: ConstrainedBox(
+                        constraints: _constraints(context),
+                        child: IgnorePointer(
+                          ignoring: !_isFirst,
+                          child: child,
+                        ),
+                      ),
+                    ),
+                  );
   }
 }
