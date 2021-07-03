@@ -984,38 +984,21 @@ class _SwipablePositioned extends StatelessWidget {
                   ),
                 ),
               )
-            : _isSecond
-                ? Positioned(
-                    top: -position.dy,
-                    left: position.dx,
-                    child: Transform.rotate(
-                      angle: _rotationAngle,
-                      alignment: Alignment.topLeft,
-                      origin: _rotationOrigin,
-                      child: ConstrainedBox(
-                        constraints: _constraints(context),
-                        child: IgnorePointer(
-                          ignoring: !_isFirst,
-                          child: child,
-                        ),
-                      ),
+            : Positioned(
+                top: -position.dy,
+                left: position.dx,
+                child: Transform.rotate(
+                  angle: _rotationAngle,
+                  alignment: Alignment.topLeft,
+                  origin: _rotationOrigin,
+                  child: ConstrainedBox(
+                    constraints: _constraints(context),
+                    child: IgnorePointer(
+                      ignoring: !_isFirst,
+                      child: child,
                     ),
-                  )
-                : Positioned(
-                    top: -position.dy,
-                    left: position.dx,
-                    child: Transform.rotate(
-                      angle: _rotationAngle,
-                      alignment: Alignment.topLeft,
-                      origin: _rotationOrigin,
-                      child: ConstrainedBox(
-                        constraints: _constraints(context),
-                        child: IgnorePointer(
-                          ignoring: !_isFirst,
-                          child: child,
-                        ),
-                      ),
-                    ),
-                  );
+                  ),
+                ),
+              );
   }
 }
